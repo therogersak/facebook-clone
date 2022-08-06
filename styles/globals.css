@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .navBtn {
+    @apply h-11 hover:bg-gray-200  transition-all duration-200 cursor-pointer py-2 px-4 md:px-6 lg:px-8 xl:px-10  rounded-md;
+  }
+
+  .navBtn2 {
+    @apply h-10 bg-gray-200 transition-all duration-200 cursor-pointer py-2 px-2 rounded-full hover:bg-gray-300;
+  }
+
+  .btn {
+    @apply h-8 hover:bg-gray-200 rounded-full cursor-pointer py-1 px-1;
+  }
+
+  .btn2 {
+    @apply hover:bg-gray-200 flex hover:shadow-sm items-center space-x-2 py-[10px] px-4 rounded-md;
+  }
+
+  .btn3{
+    @apply h-6 hover:scale-125 transition-all duration-200 cursor-pointer
+  }
+}
