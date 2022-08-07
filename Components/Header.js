@@ -8,10 +8,15 @@ import {
   BellIcon,
   ChatIcon,
   ViewGridAddIcon,
-  MenuIcon
+  MenuIcon,
 } from "@heroicons/react/outline";
 import Image from "next/image";
+import { useSession, signOut } from "next-auth/react";
+import { useRouter } from "next/router";
 function Header() {
+  const { data: session } = useSession();
+  console.log(session);
+  const router = useRouter();
   return (
     <>
       <div className="bg-white shadow-md sticky top-0 left-0 z-50">
@@ -44,19 +49,30 @@ function Header() {
             <UserGroupIcon className="navBtn" />
           </div>
           {/* Header Right */}
-          <div className="flex items-center space-x-2">
-            <div className="space-x-2 hidden lg:flex ">
-              <ViewGridAddIcon className="navBtn2" />
-              <ChatIcon className="navBtn2" />
-              <BellIcon className="navBtn2" />
+          {session && (
+            <div className="flex items-center space-x-2">
+              <div className="space-x-2 hidden lg:flex ">
+                <ViewGridAddIcon className="navBtn2" />
+                <ChatIcon className="navBtn2" />
+                <BellIcon className="navBtn2" />
+              </div>
+              <MenuIcon className="md:hidden block h-8" />
+              <img
+                src={session?.user?.image}
+                onClick={signOut}
+                className="w-11 h-11 border p-[1px] rounded-full"
+                alt="lion"
+              />
             </div>
-            <MenuIcon className="md:hidden block h-8" />
-            <img
-              src="https://cdn.sharechat.com/cartoonimgs.._a0c117c_1603509293864_sc_cmprsd_40.jpg"
-              className="w-11 h-11 border p-[1px] rounded-full"
-              alt="lion"
-            />
-          </div>
+          )}
+          {!session && (
+            <button
+              onClick={() => router.push("/auth/signin")}
+              className="text-blue-500 mr-5 "
+            >
+              Sign In
+            </button>
+          )}
         </div>
       </div>
     </>

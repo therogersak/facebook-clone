@@ -9,14 +9,12 @@ import Img7 from "../public/icons/page.png";
 import Image from "next/image";
 import SideItem from "./SideItem";
 import { ChevronDownIcon } from "@heroicons/react/outline";
+import { useSession } from "next-auth/react";
 function Sidebar() {
+  const { data: session } = useSession();
   return (
     <div className="space-y-3 w-[350px] hidden xl:block">
-      <SideItem
-        img="https://cdn.sharechat.com/cartoonimgs.._a0c117c_1603509293864_sc_cmprsd_40.jpg"
-        name="Captain Yadav"
-        main
-      />
+      <SideItem img={session?.user?.image} name={session?.user.name} main />
       <SideItem img={Img1} name="Find Frieinds" />
       <SideItem img={Img2} name="Group" />
       <SideItem img={Img3} name="Marketplace" />

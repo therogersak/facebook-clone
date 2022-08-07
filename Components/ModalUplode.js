@@ -4,12 +4,52 @@ import { useRecoilState } from "recoil";
 import { uplodeState } from "../Atoms/UplodeAtom";
 import { PlusIcon } from "@heroicons/react/outline";
 import { storage, db } from "../firebaseConfig/firebase";
+import {
+  addDoc,
+  collection,
+  doc,
+  serverTimestamp,
+  updateDoc,
+} from "firebase/firestore";
+import { getDownloadURL, ref, uploadString } from "firebase/storage";
+import { async } from "@firebase/util";
+import { useSession } from "next-auth/react";
 
 function ModalUplode() {
+  const { data: session } = useSession();
   const [open, setOpen] = useRecoilState(uplodeState);
   const [caption, setCaption] = useState("");
   const [loading, setLoading] = useState(false);
   const [img, setImg] = useState(null);
+
+  
+
+  const uploder = async () => {
+    if (loading) return;
+    setLoading(true);
+    const docRef = await addDoc(collection(db, "posts"), {
+      name: session?.user?.name,
+      username: "captainyadav",
+      avatar: session?.user?.image,
+      caption: caption,
+      timestamp: serverTimestamp(),
+    });
+
+    const imgRef = ref(storage, `/posts/${docRef.id}/image`);
+
+    await uploadString(imgRef, img, "data_url").then(async (snapshot) => {
+      const downloadURL = await getDownloadURL(imgRef);
+
+      await updateDoc(doc(db, "posts", docRef.id), {
+        image: downloadURL,
+      });
+    });
+
+    setImg(null);
+    setOpen(false);
+    setLoading(false);
+    setCaption("");
+  };
 
   const imgHandler = (e) => {
     const reader = new FileReader();
@@ -22,10 +62,6 @@ function ModalUplode() {
     };
   };
 
-  const uploder = async () => {};
-  if (loading) return;
-  setLoading(true);
-  
   return (
     <>
       <div>
@@ -33,7 +69,7 @@ function ModalUplode() {
           <Dialog
             as="div"
             className="relative z-10"
-            onClose={() => setOpen(false)}
+            onClose={loading ? () => setOpen(true) : () => setOpen(false)}
           >
             <Transition.Child
               as={Fragment}

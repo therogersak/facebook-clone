@@ -20,7 +20,7 @@ function Widgets() {
     setUsers(fakerData);
   }, [faker]);
 
-  console.log(users);
+
   return (
     <>
       <div className="hidden lg:block w-[370px]">
